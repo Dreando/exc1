@@ -38,7 +38,7 @@ transaction_id,transaction_amount,customer_first_name,customer_id,customer_last_
 313,"100,00",Anna,2,Zaradna,21.12.2020 21:05:06
 314,"24,21",Anna,2,Zaradna,21.12.2020 21:05:07
 315,"37,77",Anna,2,Zaradna,21.12.2020 21:05:08
-402,"5,00",Micha?,3,Micha?owski,29.12.2020 21:00:03
+402,"5,00",Micha?,3,Michałowski,29.12.2020 21:00:03
 111,"500,00",Jakub,4,Jakubowski,21.12.2020 13:21:00
 112,"30,50",Jakub,4,Jakubowski,31.12.2020 00:00:01
 113,"441,21",Jakub,4,Jakubowski,16.12.2020 07:21:30
