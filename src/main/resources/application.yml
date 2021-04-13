@@ -1,0 +1,9 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/exc1db
+security:
+  predefined-user-credentials:
+    user1: pass1
+    user2: pass2
+    user3: pass3
