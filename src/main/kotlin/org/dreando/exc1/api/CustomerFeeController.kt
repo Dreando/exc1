@@ -12,7 +12,11 @@ class CustomerFeeController {
 
     @GetMapping
     fun getLastMonthCustomerFee(
-            @RequestParam("customer_id", required = false, defaultValue = "ALL") customerId: List<String> = listOf()
+        @RequestParam(
+            CUSTOMER_ID_QUERY_PARAM,
+            required = false,
+            defaultValue = "ALL"
+        ) customerId: List<String> = listOf()
     ): Flux<CustomerFeeResponse> {
         println()
         return Flux.empty()

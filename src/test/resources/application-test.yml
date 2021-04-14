@@ -1,3 +1,7 @@
 security:
   predefined-user-credentials:
     admin: admin
+data:
+  csv:
+    transactions-location: src/test/resources/test_transactions.csv
+    fee-wages-location: src/test/resources/test_fee_wages.csv

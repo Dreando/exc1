@@ -31,8 +31,8 @@ class CsvReader {
     // Locale should probably get injected from some tenant/customer dependent configuration
     private fun String.toLocalizedDouble() = NumberFormat.getInstance(Locale.getDefault()).parse(this).toDouble()
 
-    fun readTransactions(): List<Transaction> {
-        return csvReader().readAllWithHeader(File("src/main/resources/transactions.csv")).let {
+    fun readTransactions(csvFileLocation: String): List<Transaction> {
+        return csvReader().readAllWithHeader(File(csvFileLocation)).let {
             it.mapNotNull { row ->
                 try {
                     Transaction(
@@ -50,8 +50,8 @@ class CsvReader {
         }
     }
 
-    fun readFeeWages(): List<TransactionsFeeWage> {
-        return csvReader().readAllWithHeader(File("src/main/resources/fee_wages.csv")).let {
+    fun readFeeWages(csvFileLocation: String): List<TransactionsFeeWage> {
+        return csvReader().readAllWithHeader(File(csvFileLocation)).let {
             it.mapNotNull { row ->
                 try {
                     TransactionsFeeWage(

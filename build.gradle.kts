@@ -29,10 +29,11 @@ dependencies {
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.rest-assured:rest-assured:4.3.3")
-    // For the purpose of rest-assured 4.3
+    // For the purpose of rest-assured 4.3 due to some version clashes with spring
     testImplementation("io.rest-assured:rest-assured-common:4.3.3")
     testImplementation("io.rest-assured:json-path:4.3.3")
     testImplementation("io.rest-assured:xml-path:4.3.3")
+    // Using 2.2.0 instead of available 3.0.0 because it is not compatible with spring yet (springs fault)
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0")
 }
 
