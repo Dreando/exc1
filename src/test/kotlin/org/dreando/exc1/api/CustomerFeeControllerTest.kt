@@ -28,15 +28,6 @@ internal class CustomerFeeControllerTest : BaseRestAssuredTest() {
      *
      * I had some intuition and decided to go with option 1
      */
-    @Test
-    fun `test calculate fee for nonexistent customer should result in 404`() {
-        givenAuthenticated(TEST_USER_CREDENTIALS)
-            .`when`()
-            .queryParam(CUSTOMER_ID_QUERY_PARAM, 999)
-            .get(CUSTOMER_FEE_ENDPOINT)
-            .then()
-            .statusCode(HttpStatus.NOT_FOUND.value())
-    }
 
     @Test
     fun `test calculate fee for single user of id 1`() {
@@ -122,7 +113,7 @@ internal class CustomerFeeControllerTest : BaseRestAssuredTest() {
         assertThat(client2Response.customerLastName).isEqualTo("Owski")
         assertThat(client2Response.lastMonthTransactionsNumber).isEqualTo(2)
         assertThat(client2Response.lastMonthTransactionsValue).isEqualTo(2001.0)
-        assertThat(client2Response.fee).isEqualTo(60.01)
+        assertThat(client2Response.fee).isEqualTo(60.03)
         assertThat(client2Response.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 2, 13, 22, 11))
     }
 }

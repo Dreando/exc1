@@ -1,4 +1,4 @@
-package org.dreando.exc1.transaction
+package org.dreando.exc1.fee
 
 import java.time.LocalDateTime
 

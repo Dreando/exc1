@@ -1,5 +1,6 @@
 package org.dreando.exc1.transaction
 
+import org.dreando.exc1.csv.CsvReader
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -10,11 +11,15 @@ class TransactionService(
     @Value("\${data.csv.transactions-location}") private val transactionsFileLocation: String
 ) {
 
-    private val customerTransactions = csvReader.readTransactions(transactionsFileLocation).groupBy {
+    // TODO: some logs would be appreciated
+    private val transactions = csvReader.readTransactions(transactionsFileLocation).groupBy {
         it.customerId
     }
 
-    fun getCustomerTransactions(customerId: Int) =
-        customerTransactions[customerId]?.let { transactions -> Flux.fromIterable(transactions) }
-            ?: throw NoCustomerFound(customerId)
+    // TODO: describe behaviour (why empty and not errorstate/exception)
+    fun getTransactions(customerIds: List<Int>): Flux<Transaction> {
+        return if (customerIds.isEmpty()) {
+            Flux.fromIterable(transactions.values.flatten())
+        } else Flux.fromIterable(customerIds.flatMap { transactions[it] ?: listOf() })
+    }
 }

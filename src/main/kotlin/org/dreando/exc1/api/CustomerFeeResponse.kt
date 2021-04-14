@@ -1,8 +1,9 @@
 package org.dreando.exc1.api
 
-import org.dreando.exc1.transaction.CustomerFee
+import org.dreando.exc1.fee.CustomerFee
 import java.time.LocalDateTime
 
+// TODO: format date, round doubles
 data class CustomerFeeResponse(
     val customerId: Int,
     val customerFirstName: String,

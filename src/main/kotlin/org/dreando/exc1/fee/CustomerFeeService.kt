@@ -1,8 +1,11 @@
-package org.dreando.exc1.transaction
+package org.dreando.exc1.fee
 
+import org.dreando.exc1.csv.CsvReader
+import org.dreando.exc1.transaction.Transaction
+import org.dreando.exc1.transaction.TransactionService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import reactor.core.publisher.Flux
 import java.util.*
 
 @Service
@@ -16,14 +19,16 @@ class CustomerFeeService(
 
     private val wageUpperRanges = wages.navigableKeySet()
 
-    fun calculateCustomerFee(customerId: Int): Mono<CustomerFee> {
-        return transactionService.getCustomerTransactions(customerId)
-            .collectSortedList(compareBy { it.transactionDate })
+    // TODO: some logs would be appreciated
+    fun calculateCustomersFee(customerIds: List<Int>): Flux<CustomerFee> {
+        return transactionService.getTransactions(customerIds)
+            .groupBy(Transaction::customerId)
+            .flatMap { customerTransactions -> customerTransactions.collectSortedList(compareBy { tx -> tx.transactionDate }) }
             .map { customerTransactions ->
                 val lastTransaction = customerTransactions.last()
                 val lastMonthTransactionsValue = customerTransactions.sumByDouble { it.transactionAmount }
                 CustomerFee(
-                    customerId = customerId,
+                    customerId = lastTransaction.customerId,
                     customerFirstName = lastTransaction.customerFirstName,
                     customerLastName = lastTransaction.customerLastName,
                     lastMonthTransactionsNumber = customerTransactions.size,

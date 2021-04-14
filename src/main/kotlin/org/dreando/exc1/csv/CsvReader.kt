@@ -1,6 +1,8 @@
-package org.dreando.exc1.transaction
+package org.dreando.exc1.csv
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
+import org.dreando.exc1.transaction.Transaction
+import org.dreando.exc1.fee.TransactionsFeeWage
 import org.springframework.stereotype.Component
 import java.io.File
 import java.text.NumberFormat
@@ -17,6 +19,8 @@ private const val TRANSACTION_DATE_HEADER = "transaction_date"
 
 private const val TRANSACTIONS_VALUE_UPPER_BOUND_HEADER = "transaction_value_less_than"
 private const val TRANSACTION_FEE_VALUE = "fee_percentage_of_transaction_value"
+
+// TODO: having tx/wage types here smells a bit...
 
 // Since I have no instructions how to treat incomplete data, I simply skip the rows with missing values if this ever happens.
 @Component
