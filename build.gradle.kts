@@ -28,7 +28,16 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("io.rest-assured:rest-assured:4.3.3")
+    // For the purpose of rest-assured 4.3
+    testImplementation("io.rest-assured:rest-assured-common:4.3.3")
+    testImplementation("io.rest-assured:json-path:4.3.3")
+    testImplementation("io.rest-assured:xml-path:4.3.3")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0")
 }
+
+// For the purpose of rest-assured 4.3
+extra.apply { set("groovy.version", "3.0.3") }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {

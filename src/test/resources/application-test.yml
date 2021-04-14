@@ -1,0 +1,3 @@
+security:
+  predefined-user-credentials:
+    admin: admin
