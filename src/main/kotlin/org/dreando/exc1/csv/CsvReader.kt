@@ -1,8 +1,9 @@
 package org.dreando.exc1.csv
 
 import com.github.doyaaaaaken.kotlincsv.dsl.csvReader
-import org.dreando.exc1.transaction.Transaction
+import org.dreando.exc1.COMMON_DATE_PATTERN
 import org.dreando.exc1.fee.TransactionsFeeWage
+import org.dreando.exc1.transaction.Transaction
 import org.springframework.stereotype.Component
 import java.io.File
 import java.text.NumberFormat
@@ -21,31 +22,33 @@ private const val TRANSACTIONS_VALUE_UPPER_BOUND_HEADER = "transaction_value_les
 private const val TRANSACTION_FEE_VALUE = "fee_percentage_of_transaction_value"
 
 // TODO: having tx/wage types here smells a bit...
-
-// Since I have no instructions how to treat incomplete data, I simply skip the rows with missing values if this ever happens.
 @Component
 class CsvReader {
 
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+    private val dateTimeFormatter = DateTimeFormatter.ofPattern(COMMON_DATE_PATTERN)
+    private val numberFormat = NumberFormat.getInstance(Locale.getDefault())
+    private fun String.toLocalizedDouble(): Double {
+        return numberFormat.parse(this).toDouble()
+    }
 
     private fun Map<String, String>.getExceptionally(key: String): String {
         return this[key] ?: throw RuntimeException("Value $key is missing in this row $this")
     }
-
-    // Locale should probably get injected from some tenant/customer dependent configuration
-    private fun String.toLocalizedDouble() = NumberFormat.getInstance(Locale.getDefault()).parse(this).toDouble()
 
     fun readTransactions(csvFileLocation: String): List<Transaction> {
         return csvReader().readAllWithHeader(File(csvFileLocation)).let {
             it.mapNotNull { row ->
                 try {
                     Transaction(
-                            transactionId = row.getExceptionally(TRANSACTION_ID_HEADER).toInt(),
-                            transactionAmount = row.getExceptionally(TRANSACTION_AMOUNT_HEADER).toLocalizedDouble(),
-                            customerId = row.getExceptionally(CUSTOMER_ID_HEADER).toInt(),
-                            customerFirstName = row.getExceptionally(CUSTOMER_FIRST_NAME_HEADER),
-                            customerLastName = row.getExceptionally(CUSTOMER_LAST_NAME_HEADER),
-                            transactionDate = LocalDateTime.parse(row.getExceptionally(TRANSACTION_DATE_HEADER), dateTimeFormatter)
+                        transactionId = row.getExceptionally(TRANSACTION_ID_HEADER).toInt(),
+                        transactionAmount = row.getExceptionally(TRANSACTION_AMOUNT_HEADER).toLocalizedDouble(),
+                        customerId = row.getExceptionally(CUSTOMER_ID_HEADER).toInt(),
+                        customerFirstName = row.getExceptionally(CUSTOMER_FIRST_NAME_HEADER),
+                        customerLastName = row.getExceptionally(CUSTOMER_LAST_NAME_HEADER),
+                        transactionDate = LocalDateTime.parse(
+                            row.getExceptionally(TRANSACTION_DATE_HEADER),
+                            dateTimeFormatter
+                        )
                     )
                 } catch (exception: Exception) {
                     null
@@ -59,8 +62,9 @@ class CsvReader {
             it.mapNotNull { row ->
                 try {
                     TransactionsFeeWage(
-                            transactionsValueUpperBound = row.getExceptionally(TRANSACTIONS_VALUE_UPPER_BOUND_HEADER).toInt(),
-                            transactionFeeValue = row.getExceptionally(TRANSACTION_FEE_VALUE).toLocalizedDouble()
+                        transactionsValueUpperBound = row.getExceptionally(TRANSACTIONS_VALUE_UPPER_BOUND_HEADER)
+                            .toInt(),
+                        transactionFeeValue = row.getExceptionally(TRANSACTION_FEE_VALUE).toLocalizedDouble()
                     )
                 } catch (exception: Exception) {
                     null

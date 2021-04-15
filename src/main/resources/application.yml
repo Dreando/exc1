@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://localhost:27017/exc1db
+      uri: mongodb://localhost:27017/fee-db
 security:
   predefined-user-credentials:
     user1: pass1

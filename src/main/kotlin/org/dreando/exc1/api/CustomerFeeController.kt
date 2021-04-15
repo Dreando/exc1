@@ -1,6 +1,7 @@
 package org.dreando.exc1.api
 
 import org.dreando.exc1.fee.CustomerFeeService
+import org.dreando.exc1.feereport.FeeReportService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -21,9 +22,7 @@ class CustomerFeeController(private val customerFeeService: CustomerFeeService) 
     ): Flux<CustomerFeeResponse> {
         return Flux.from(
             customerFeeService.calculateCustomersFee(
-                customerIds.mapNotNull {
-                    if (it == "ALL") null else it.toIntOrNull()
-                }
+                customerIds.mapNotNull { if (it == "ALL") null else it.toIntOrNull() }
             ).map { it.toResponse() }
         )
     }

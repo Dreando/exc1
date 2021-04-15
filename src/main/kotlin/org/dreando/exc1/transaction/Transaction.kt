@@ -9,5 +9,4 @@ data class Transaction(
         val customerFirstName: String,
         val customerLastName: String,
         val transactionDate: LocalDateTime
-
 )
