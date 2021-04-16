@@ -24,17 +24,17 @@ class CustomerFeeService(
 
     private val availableProcessors = Runtime.getRuntime().availableProcessors()
     private val ioScheduler = Schedulers.newBoundedElastic(availableProcessors, Int.MAX_VALUE, "new-io-scheduler")
-    private val parallelScheduler = Schedulers.newParallel("new-parallel-scheduler", availableProcessors)
+    private val processingScheduler = Schedulers.newParallel("new-parallel-scheduler", availableProcessors)
 
-    private val wages = csvReader.readFeeWages(feeWagesFileLocation)
+    private val wages = csvReader.readRowsToModel(feeWagesFileLocation, ::mapRowToTransactionsFeeWage)
         .associateByTo(TreeMap()) { it.transactionsValueUpperBound }
+
     private val wageUpperRanges = wages.navigableKeySet()
 
-    // TODO: some logs would be appreciated
     fun calculateCustomersFee(customerIds: List<Int>): ParallelFlux<CustomerFee> {
         return transactionService.getTransactions(customerIds)
             .parallel()
-            .runOn(parallelScheduler)
+            .runOn(processingScheduler)
             .map { customerTransactions -> customerTransactions.sortedBy { tx -> tx.transactionDate } }
             .map { customerTransactions ->
                 val lastTransaction = customerTransactions.last()
@@ -52,6 +52,7 @@ class CustomerFeeService(
                 // Fire & forget
                 Mono.fromRunnable<Unit> { feeReportService.reportFeeCalculation(fee.customerId, fee.fee).subscribe() }
                     .subscribeOn(ioScheduler)
+                    .doOnError { logger.error("Problems saving the report to db", it) }
                     .subscribe()
             }
     }

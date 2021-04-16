@@ -14,7 +14,7 @@ class TransactionService(
 
     private val logger = LoggerFactory.getLogger(TransactionService::class.java)
 
-    private val transactions = csvReader.readTransactions(transactionsFileLocation).groupBy {
+    private val transactions = csvReader.readRowsToModel(transactionsFileLocation, ::mapRowToTransaction).groupBy {
         it.customerId
     }
 

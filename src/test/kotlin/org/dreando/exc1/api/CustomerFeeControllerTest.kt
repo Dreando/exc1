@@ -41,14 +41,7 @@ internal class CustomerFeeControllerTest : BaseRestAssuredTest() {
             .body().`as`(Array<CustomerFeeResponse>::class.java)
 
         assertThat(fees).hasSize(1)
-        val client1Response = fees[0]
-        assertThat(client1Response.customerId).isEqualTo(1)
-        assertThat(client1Response.customerFirstName).isEqualTo("Andrzej")
-        assertThat(client1Response.customerLastName).isEqualTo("Andrzejowski")
-        assertThat(client1Response.lastMonthTransactionsNumber).isEqualTo(3)
-        assertThat(client1Response.lastMonthTransactionsValue).isEqualTo(1400.0)
-        assertThat(client1Response.fee).isEqualTo(56.0)
-        assertThat(client1Response.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 13, 13, 22, 12))
+        assertCustomer1IsCalculatedCorrectly(fees[0])
     }
 
     @Test
@@ -96,24 +89,28 @@ internal class CustomerFeeControllerTest : BaseRestAssuredTest() {
     }
 
     private fun assertBothCustomersAreCalculatedCorrectly(fees: Array<CustomerFeeResponse>) {
-        val client1Response =
+        assertCustomer1IsCalculatedCorrectly(
             fees.find { it.customerId == 1 } ?: throw AssertionError("Response contains no customer of id 1!")
-        assertThat(client1Response.customerId).isEqualTo(1)
-        assertThat(client1Response.customerFirstName).isEqualTo("Andrzej")
-        assertThat(client1Response.customerLastName).isEqualTo("Andrzejowski")
-        assertThat(client1Response.lastMonthTransactionsNumber).isEqualTo(3)
-        assertThat(client1Response.lastMonthTransactionsValue).isEqualTo(1400.0)
-        assertThat(client1Response.fee).isEqualTo(56.0)
-        assertThat(client1Response.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 13, 13, 22, 12))
+        )
 
-        val client2Response =
+        val customer2Response =
             fees.find { it.customerId == 2 } ?: throw AssertionError("Response contains no customer of id 2!")
-        assertThat(client2Response.customerId).isEqualTo(2)
-        assertThat(client2Response.customerFirstName).isEqualTo("Konstantyn")
-        assertThat(client2Response.customerLastName).isEqualTo("Owski")
-        assertThat(client2Response.lastMonthTransactionsNumber).isEqualTo(2)
-        assertThat(client2Response.lastMonthTransactionsValue).isEqualTo(2001.0)
-        assertThat(client2Response.fee).isEqualTo(60.03)
-        assertThat(client2Response.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 2, 13, 22, 11))
+        assertThat(customer2Response.customerId).isEqualTo(2)
+        assertThat(customer2Response.customerFirstName).isEqualTo("Konstantyn")
+        assertThat(customer2Response.customerLastName).isEqualTo("Owski")
+        assertThat(customer2Response.lastMonthTransactionsNumber).isEqualTo(2)
+        assertThat(customer2Response.lastMonthTransactionsValue).isEqualTo(2001.0)
+        assertThat(customer2Response.fee).isEqualTo(60.03)
+        assertThat(customer2Response.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 2, 13, 22, 11))
+    }
+
+    private fun assertCustomer1IsCalculatedCorrectly(customerResponse: CustomerFeeResponse) {
+        assertThat(customerResponse.customerId).isEqualTo(1)
+        assertThat(customerResponse.customerFirstName).isEqualTo("Andrzej")
+        assertThat(customerResponse.customerLastName).isEqualTo("Andrzejowski")
+        assertThat(customerResponse.lastMonthTransactionsNumber).isEqualTo(3)
+        assertThat(customerResponse.lastMonthTransactionsValue).isEqualTo(1400.0)
+        assertThat(customerResponse.fee).isEqualTo(56.0)
+        assertThat(customerResponse.lastTransactionDateTime).isEqualTo(LocalDateTime.of(2020, 12, 13, 13, 22, 12))
     }
 }
