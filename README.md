@@ -8,7 +8,7 @@ or simply edit the application.yml file.
 ### Building & running
 
 To just build, type in the terminal `./gradlew build` from the project directory. This also runs tests. Tu build and
-run, type in the terminal `./gradlew bootRun` from the project directory.
+run, type in the terminal `./gradlew bootRun` from the project directory. By default, this runs on port 8080. 
 
 ### API
 
