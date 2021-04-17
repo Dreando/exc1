@@ -14,17 +14,20 @@ class TransactionService(
 
     private val logger = LoggerFactory.getLogger(TransactionService::class.java)
 
-    private val transactions = csvReader.readRowsToModel(transactionsFileLocation, ::mapRowToTransaction).groupBy {
-        it.customerId
-    }
+    private val customerTransactions = csvReader.readRowsToModel(transactionsFileLocation, ::mapRowToTransaction)
+        .groupBy { tx -> tx.customerId }
 
     init {
-        logger.info("Loaded transactions of ${transactions.size} customers into memory")
+        logger.info("Loaded transactions of ${customerTransactions.size} customers into memory")
     }
 
+    /**
+     * @return emits collections of customers transactions. Returns all customers transactions if empty list provided
+     * on input.
+     */
     fun getTransactions(customerIds: List<Int>): Flux<List<Transaction>> {
         return if (customerIds.isEmpty()) {
-            Flux.fromIterable(transactions.values)
-        } else Flux.fromIterable(customerIds.map { transactions[it] ?: listOf() })
+            Flux.fromIterable(customerTransactions.values)
+        } else Flux.fromIterable(customerIds.map { customerTransactions[it] ?: listOf() })
     }
 }

@@ -31,6 +31,9 @@ class CustomerFeeService(
 
     private val wageUpperRanges = wages.navigableKeySet()
 
+    /**
+     * @return calculated fee for requested customers, or for all customers in empty list provided
+     */
     fun calculateCustomersFee(customerIds: List<Int>): ParallelFlux<CustomerFee> {
         return transactionService.getTransactions(customerIds)
             .parallel()
